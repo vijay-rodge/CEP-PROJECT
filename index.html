@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthMate</title>
+  <link rel="stylesheet" href="medical_styles.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><i class="fa-solid fa-heart-pulse"></i> <span>HealthMate</span></div>
+    <button class="icon-btn" id="themeBtn" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+  </header>
+
+  <div class="backdrop" id="backdrop" hidden></div>
+
+  <main class="container layout">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <h1>Health Desk</h1>
+          <p class="muted">Search trusted, medical-only information. Use image OCR to explore conditions.</p>
+        </div>
+        
+      </div>
+    </section>
+
+
+    <section class="content">
+      <section class="panel">
+        <h2 class="panel-title">Medical Search</h2>
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="searchInput" type="text" placeholder="Search a disease (e.g., Dengue, Malaria, Diabetes)">
+          <button id="searchBtn" class="btn primary"><span class="btn-text">Search</span></button>
+          <button id="imageBtn" class="btn" title="Image Search"><i class="fa-solid fa-image"></i></button>
+        </div>
+        <div class="chips wrap" id="chips"></div>
+      </section>
+
+      <section class="panel" id="imagePanel">
+        <h3 style="margin-top:0">Camera</h3>
+        <div class="camera" id="camera" hidden>
+          <video id="video" autoplay playsinline></video>
+          <div class="row">
+            <button id="captureBtn" class="btn"><i class="fa-solid fa-circle-dot"></i> Capture</button>
+            <button id="closeCamBtn" class="btn outline"><i class="fa-solid fa-stop"></i> Stop</button>
+          </div>
+          <canvas id="canvas" hidden></canvas>
+        </div>
+        <div class="row" style="align-items:center;justify-content:space-between;margin-top:8px">
+          <span id="ocrStatus" class="muted small"></span>
+          <button id="ocrSearchAllBtn" class="btn" style="display:none"><i class="fa-solid fa-magnifying-glass"></i> Search All Text</button>
+        </div>
+        <pre class="ocr" id="ocrOut"></pre>
+      </section>
+
+      <section class="panel" id="resultBox">
+        <div class="result-head">
+          <h2 id="resTitle">Result</h2>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="shareBtn" class="icon-btn" aria-label="Share result" style="display:none"><i class="fa-solid fa-share-nodes"></i></button>
+            <a id="openLink" class="icon-btn" target="_blank" rel="noopener" aria-label="Open source" style="display:none"><i class="fa-solid fa-up-right-from-square"></i></a>
+          </div>
+        </div>
+        <p id="resExtract" class="extract muted"></p>
+        <div id="medSections" style="display:grid;gap:12px;margin-top:10px">
+          <section class="panel" id="symptomsPanel" style="margin:0;display:none">
+            <h3 style="margin-top:0">Symptoms</h3>
+            <p id="symptomsSec" class="muted"></p>
+          </section>
+          <section class="panel" id="treatmentPanel" style="margin:0;display:none">
+            <h3 style="margin-top:0">Treatment / Remedies</h3>
+            <p id="treatmentSec" class="muted"></p>
+          </section>
+          <section class="panel" id="preventionPanel" style="margin:0;display:none">
+            <h3 style="margin-top:0">Prevention / Cure</h3>
+            <p id="preventionSec" class="muted"></p>
+          </section>
+          <section class="panel" id="relatedPanel" style="margin:0;display:none">
+            <h3 style="margin-top:0">See also</h3>
+            <ul id="relatedList" class="muted" style="margin:0;padding-left:18px"></ul>
+          </section>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <section class="panel" style="max-width:1100px;margin:16px auto;">
+    <h4>Disclaimer</h4>
+    <p class="muted small" style="max-width:150ch;margin:0 auto;text-align:center;line-height:1.5">This information is for educational purposes only and not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions regarding a medical condition.</p>
+  </section>
+
+  <footer class="footer">
+    <div class="foot-inner">
+      <span>Vijay © 2025. All rights reserved by <strong>HealthMate.in</strong></span>
+      <span class="sep">•</span>
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=rodgevijay1@gmail.com" target="_blank" rel="noopener" class="link" aria-label="Email Vijay">📧 rodgevijay1@gmail.com</a>
+      <span class="sep">|</span>
+      <a href="https://www.linkedin.com/in/vijay-rodge" target="_blank" rel="noopener" class="link" aria-label="LinkedIn">💼 LinkedIn</a>
+      <span class="sep">|</span>
+      <a href="https://github.com/vijay-rodge" target="_blank" rel="noopener" class="link" aria-label="GitHub">💻 GitHub</a>
+    </div>
+  </footer>
+
+  <!-- Image choice modal -->
+  <div id="imgChooser" class="panel" style="position:fixed;left:50%;top:10%;transform:translateX(-50%);width:92%;max-width:360px;display:none;z-index:130;background:var(--panel);color:var(--text);border:1px solid var(--border)">
+    <h4 style="margin-top:0">Image Search</h4>
+    <p class="muted small">Choose how to search by image</p>
+    <div class="row">
+      <button id="chooseGallery" class="btn"><i class="fa-solid fa-images"></i> Gallery</button>
+      <button id="chooseCamera" class="btn primary"><i class="fa-solid fa-camera"></i> Camera</button>
+    </div>
+    <input id="galleryInput" type="file" accept="image/*" style="display:none">
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="medical_app.js"></script>
+</body>
+</html>
+
